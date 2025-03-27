@@ -1,29 +1,26 @@
 pipeline {
     agent any
-
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://gitlab.com/sxbres/javaJenkins'
+                git branch: 'main', url: 'https://github.com/sxbres/javaJenkins.git'
             }
         }
-
-        stage('Build') {
+        stage('Compile') {
             steps {
-                bat 'mvn clean package'
+                bat '''
+                    mkdir target
+                    javac -d target src/main/java/*.java
+                '''
             }
         }
-
-        stage('Test') {
+        stage('Package') {
             steps {
-                bat 'mvn test'
+                bat '''
+                    cd target
+                    jar cvf app.jar *.class
+                '''
             }
         }
-/*
-        stage('Subir a FTP') {
-            steps {
-                sh 'curl -T target/*.jar ftp://usuario:contraseña@servidorFTP/ruta/'
-            }
-        }*/
     }
 }
