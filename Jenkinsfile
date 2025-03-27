@@ -18,32 +18,57 @@ pipeline {
             }
         }
         
+        pipeline {
+    agent any
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/sxbres/javaJenkins.git'
+            }
+        }
+        
+        stage('Compile') {
+            steps {
+                bat '''
+                    if exist target rmdir /s /q target
+                    mkdir target
+                    mkdir target\\test-classes
+                    javac -d target src/app/*.java
+                '''
+            }
+        }
+        
         stage('Test') {
-    steps {
-        bat '''
-            echo Compilando tests desde directorio original...
-            javac -cp "target;lib/*" tests/*.java
-            
-            echo Ejecutando tests in-place...
-            java -cp "target;tests;lib/*" org.junit.runner.JUnitCore tests.AraleTest tests.SenbeiTest > test-output.txt 2>&1 || echo "Tests completed"
-            
-            echo Mostrando resultados detallados...
-            type test-output.txt
-            
-            echo Generando reporte XML...
-            echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" > test-results.xml
-            echo "<testsuite>" >> test-results.xml
-            type test-output.txt | findstr /C:"Test " >> test-results.xml
-            echo "</testsuite>" >> test-results.xml
-            
-            move test-results.xml target\\
-            move test-output.txt target\\
-        '''
-    }
-    post {
-        always {
-            junit 'target/test-results.xml'
-            archiveArtifacts 'target/test-output.txt'
+            steps {
+                bat '''
+                    echo Compilando tests...
+                    javac -cp "target;lib/*" -d target\\test-classes tests/*.java
+                    
+                    echo Mostrando estructura de target\\test-classes...
+                    dir /s /b target\\test-classes
+                    
+                    echo Ejecutando tests...
+                    java -cp "target;target\\test-classes;lib/*" org.junit.runner.JUnitCore tests.AraleTest tests.SenbeiTest > target\\test-output.txt 2>&1 || echo "Tests completed with some failures"
+                    
+                    type target\\test-output.txt
+                '''
+            }
+            post {
+                always {
+                    junit 'target/test-output.txt'
+                    archiveArtifacts 'target/test-output.txt'
+                }
+            }
+        }
+        
+        stage('Package') {
+            steps {
+                bat '''
+                    cd target
+                    jar cvf app.jar *
+                '''
+            }
         }
     }
 }
