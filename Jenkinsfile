@@ -10,7 +10,7 @@ pipeline {
             steps {
                 bat '''
                     mkdir target
-                    javac -d target src/main/java/*.java
+                    javac -d target src/app/*.java
                 '''
             }
         }
