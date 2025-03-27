@@ -25,7 +25,7 @@ pipeline {
             steps {
                 // Primero compila los tests
                 bat '''
-                    javac -cp target;lib/junit-4.13.2.jar -d target test/*.java
+                    javac -cp target;lib/junit-4.13.2.jar -d target tests/*.java
                 '''
                 // Luego ejecuta los tests
                 bat '''
