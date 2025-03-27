@@ -13,26 +13,6 @@ pipeline {
                 bat '''
                     if exist target rmdir /s /q target
                     mkdir target
-                    javac -d target src/app/*.java
-                '''
-            }
-        }
-        
-        pipeline {
-    agent any
-    
-    stages {
-        stage('Checkout') {
-            steps {
-                git branch: 'main', url: 'https://github.com/sxbres/javaJenkins.git'
-            }
-        }
-        
-        stage('Compile') {
-            steps {
-                bat '''
-                    if exist target rmdir /s /q target
-                    mkdir target
                     mkdir target\\test-classes
                     javac -d target src/app/*.java
                 '''
@@ -61,17 +41,6 @@ pipeline {
                 }
             }
         }
-        
-        stage('Package') {
-            steps {
-                bat '''
-                    cd target
-                    jar cvf app.jar *
-                '''
-            }
-        }
-    }
-}
         
         stage('Package') {
             steps {
