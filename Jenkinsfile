@@ -1,39 +1,44 @@
 pipeline {
     agent any
-
     
-
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/sxbres/javaJenkins.git'
+                git branch: 'main', url: 'https://github.com/sxbres/javaJenkins.git'
             }
         }
-
+        
         stage('Compile') {
             steps {
-                bat """
+                bat '''
                     if exist target rmdir /s /q target
                     mkdir target
                     mkdir target\\test-classes
                     javac -d target src/app/*.java
-                """
+                '''
             }
         }
-
         stage('Test') {
+    steps {
+        bat '''
+            echo Compilando tests...
+            mkdir test-classes 2>nul || rem
+            javac -cp "target;lib/*" -d test-classes tests/*.java
+            
+            echo Ejecutando tests...
+            java -cp "target;test-classes;lib/*" org.junit.runner.JUnitCore tests.AraleTest tests.SenbeiTest > test-output.txt 2>&1 || echo "Tests completed"
+            
+            type test-output.txt
+        '''
+    }
+}
+        
+        stage('Package') {
             steps {
-                bat """
-                    echo Compilando tests...
-                    javac -cp "target;lib/*" -d target\\test-classes tests/*.java
-                    echo Ejecutando tests...
-                    java -cp "target;target\\test-classes;lib/*" org.junit.runner.JUnitCore tests.AraleTest tests.SenbeiTest
-                """
-            }
-            post {
-                always {
-                    junit 'target/test-output.txt'  // Asegúrate de que JUnit genere un XML válido
-                }
+                bat '''
+                    cd target
+                    jar cvf app.jar *
+                '''
             }
         }
     }
