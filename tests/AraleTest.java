@@ -11,3 +11,4 @@ public class AraleTest {
         arale.eatNcha();
         assertEquals(60, arale.getEnergy());
     }
+}

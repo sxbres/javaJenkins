@@ -2,7 +2,7 @@ package app;
 
 import java.util.Scanner;
 
-public class DrSlumpApp {
+public class DrSlump {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Arale arale = new Arale("Arale Norimaki", 50);
