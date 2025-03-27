@@ -1,9 +1,7 @@
 pipeline {
     agent any
 
-    tools {
-        jdk 'jdk-21'  // Nombre que configuraste en Jenkins
-    }
+    
 
     stages {
         stage('Checkout') {
