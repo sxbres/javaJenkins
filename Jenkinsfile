@@ -27,7 +27,7 @@ pipeline {
             javac -cp target;lib/junit-4.13.2.jar;lib/hamcrest-core-1.3.jar -d target tests/*.java
             
             echo === EJECUTANDO TESTS ===
-            java -cp target;lib/junit-4.13.2.jar;lib/hamcrest-core-1.3.jar org.junit.runner.JUnitCore AraleTest SenbeiTest | tee target/test-results.txt
+            java -cp target;lib/junit-4.13.2.jar;lib/hamcrest-core-1.3.jar org.junit.runner.JUnitCore AraleTest SenbeiTest
             echo === FIN DE TESTS ===
             
             # Convertir output a formato JUnit XML
