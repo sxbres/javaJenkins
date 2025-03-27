@@ -19,5 +19,35 @@ pipeline {
                 '''
             }
         }
+
+               // 3. Ejecución de Tests JUnit (lo que te falta)
+        stage('Test') {
+            steps {
+                // Primero compila los tests
+                bat '''
+                    javac -cp target;lib/junit-4.13.2.jar -d target src/test/*.java
+                '''
+                // Luego ejecuta los tests
+                bat '''
+                    java -cp target;lib/junit-4.13.2.jar;lib/hamcrest-core-1.3.jar org.junit.runner.JUnitCore app.TestSuite
+                '''
+            }
+            post {
+                always {
+                    // Genera reportes de los tests
+                    junit 'target/test-results/*.xml'
+                }
+            }
+        }
+
+        // 4. Empaquetado JAR (preparación para FTP)
+        stage('Package') {
+            steps {
+                bat '''
+                    cd target
+                    jar cvf app.jar *
+                '''
+            }
+        }
     }
 }
