@@ -21,19 +21,19 @@ pipeline {
         stage('Test') {
             steps {
                 bat '''
-                    echo Compilando tests desde directorio original...
+                    echo Compilando tests...
                     javac -cp "target;lib/*" tests/*.java
                     
-                    echo Ejecutando tests in-place...
-                    java -cp "target;tests;lib/*" org.junit.runner.JUnitCore tests.AraleTest tests.SenbeiTest > test-results.xml || echo "Tests completed"
+                    echo Ejecutando tests con output detallado...
+                    java -cp "target;tests;lib/*" org.junit.runner.JUnitCore tests.AraleTest tests.SenbeiTest > target\\test-output.txt 2>&1 || echo "Tests completed with some failures"
                     
-                    echo Moviendo resultados a target...
-                    move test-results.xml target\\
+                    type target\\test-output.txt
                 '''
             }
             post {
                 always {
-                    junit 'target/test-results.xml'
+                    junit 'target/test-output.txt'
+                    archiveArtifacts 'target/test-output.txt'
                 }
             }
         }
