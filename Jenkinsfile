@@ -52,7 +52,7 @@ pipeline {
                     echo cd / >> ftp_commands.txt
                     echo put target/app.jar >> ftp_commands.txt
                     echo bye >> ftp_commands.txt
-                    ftp -s:ftp_commands.txt
+                    ftp -n -s:ftp_commands.txt
                 '''
             }
         }
