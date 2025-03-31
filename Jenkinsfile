@@ -47,7 +47,7 @@ pipeline {
             steps {
                 bat '''
                     echo open 127.0.0.1 > ftp_commands.txt
-                    echo user jenkins >> ftp_commands.txt
+                    echo user jenkins jenkins >> ftp_commands.txt
                     echo binary >> ftp_commands.txt
                     echo cd / >> ftp_commands.txt
                     echo put target/app.jar >> ftp_commands.txt
