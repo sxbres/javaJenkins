@@ -2,10 +2,6 @@ pipeline {
     agent any
     
     stages {
-        tools {
-    jdk 'JDK21'
-}
-
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/sxbres/javaJenkins.git'
